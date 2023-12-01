@@ -1,5 +1,6 @@
 package com.kamar.imscli.ticket.view;
 
+import com.kamar.imscli.department.service.DepartmentManagementService;
 import com.kamar.imscli.ticket.event.TicketCreationEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -25,6 +26,7 @@ import org.springframework.http.client.MultipartBodyBuilder;
 public class TicketCreationView extends VerticalLayout {
 
     private final ApplicationEventPublisher eventPublisher;
+    private final DepartmentManagementService departmentManagementService;
     private final Select<String> departmentField = new Select<>();
     private final TextField titleField = new TextField("title");
     private final TextArea descriptionField = new TextArea("description");
@@ -32,9 +34,11 @@ public class TicketCreationView extends VerticalLayout {
     private final Upload fileUpload = new Upload(attachmentFiles);
     private final Button raiseButton = new Button("raise");
 
-    public TicketCreationView(ApplicationEventPublisher eventPublisher) {
+    public TicketCreationView(ApplicationEventPublisher eventPublisher,
+                              DepartmentManagementService departmentManagementService) {
         /*inject dependencies*/
         this.eventPublisher = eventPublisher;
+        this.departmentManagementService = departmentManagementService;
 
         /*configure layout*/
         this.add(
@@ -54,7 +58,9 @@ public class TicketCreationView extends VerticalLayout {
         departmentField.setRequiredIndicatorVisible(true);
         departmentField.setLabel("department");
         departmentField.setErrorMessage("select a department!");
-        departmentField.setItems("dept1", "dept2");
+        departmentField.setItems(
+                departmentManagementService.getAllDepartmentNames()
+        );
 
         departmentField.addValueChangeListener(listener -> {
             titleField.setEnabled(true);
@@ -102,12 +108,15 @@ public class TicketCreationView extends VerticalLayout {
     private Upload getFileUpload(){
         /*configure file upload*/
         fileUpload.setAutoUpload(true);
-        fileUpload.setAcceptedFileTypes("pdf", "png", "docx", "exl", "jpeg");
-//        fileUpload.setUploadButton();
+        fileUpload.setAcceptedFileTypes("file/pdf", "image/png", "image/jpeg");
         fileUpload.setMaxFileSize(10_000_000);
 
         fileUpload.addSucceededListener(listener -> {
             Notification.show("file uploaded.", 2000, Notification.Position.MIDDLE);
+        });
+
+        fileUpload.addFinishedListener(listener -> {
+            Notification.show("uploaded successfully");
         });
 
         return fileUpload;

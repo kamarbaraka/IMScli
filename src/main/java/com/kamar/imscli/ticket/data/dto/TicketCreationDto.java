@@ -1,8 +1,7 @@
 package com.kamar.imscli.ticket.data.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import java.io.InputStream;
+import java.util.Map;
 
 /**
  * the ticket creation dto.
@@ -12,6 +11,6 @@ public record TicketCreationDto(
         String department,
         String title,
         String description,
-        List<MultipartFile> attachments
+        Map<String , InputStream> attachments
 ) {
 }

@@ -45,12 +45,12 @@ public class UserLoginView extends VerticalLayout {
         usernameField.setErrorMessage("provide your username!");
         usernameField.setPlaceholder("someone@somewhere.com");
         usernameField.setTooltipText("your username");
-        usernameField.setAutofocus(true);
+//        usernameField.setAutofocus(true);
         usernameField.setId("usernameFieldId");
         usernameField.setClearButtonVisible(true);
 
         usernameField.addValueChangeListener(listener -> {
-            passwordField.focus();
+//            passwordField.focus();
             passwordField.setEnabled(true);
         });
 
@@ -64,17 +64,17 @@ public class UserLoginView extends VerticalLayout {
         passwordField.setRequired(true);
         passwordField.setRequiredIndicatorVisible(true);
         passwordField.setErrorMessage("provide your password!");
-        passwordField.setAutofocus(true);
+//        passwordField.setAutofocus(true);
         passwordField.setPlaceholder("enter password");
         passwordField.setTooltipText("your password");
 
         passwordField.addValueChangeListener(listener -> {
             loginButton.setEnabled(true);
-            loginButton.setAutofocus(true);
+//            loginButton.setAutofocus(true);
             loginButton.getStyle().setColor("white");
             loginButton.getStyle().setBackground("green");
             registerButton.setEnabled(false);
-            registerButton.setAutofocus(false);
+//            registerButton.setAutofocus(false);
         });
 
         return passwordField;
@@ -97,7 +97,7 @@ public class UserLoginView extends VerticalLayout {
 
         /*configure the registration button and return*/
         registerButton.setEnabled(true);
-        registerButton.setAutofocus(true);
+//        registerButton.setAutofocus(true);
 
         /*add listener*/
         registerButton.addClickListener(listener -> {

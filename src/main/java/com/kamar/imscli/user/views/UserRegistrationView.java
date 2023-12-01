@@ -10,6 +10,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 import java.awt.*;
@@ -71,6 +72,7 @@ public class UserRegistrationView extends VerticalLayout {
         usernameField.setTooltipText("your username");
         usernameField.setAutofocus(false);
         usernameField.setId("usernameFieldId");
+        usernameField.setValueChangeMode(ValueChangeMode.EAGER);
 
         usernameField.addValueChangeListener(listener -> {
             passwordField.setEnabled(true);
@@ -89,6 +91,7 @@ public class UserRegistrationView extends VerticalLayout {
         passwordField.setAutofocus(true);
         passwordField.setPlaceholder("enter password");
         passwordField.setTooltipText("your password");
+        passwordField.setValueChangeMode(ValueChangeMode.EAGER);
 
         passwordField.addValueChangeListener(listener -> {
             registerButton.setEnabled(true);

@@ -18,7 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * implementation of the ticket creation contract.
@@ -41,13 +44,17 @@ public class TicketCreationServiceImpl implements TicketCreationService {
         String description = event.getDescriptionField().getValue();
         MultiFileMemoryBuffer buffer = event.getMultiFileMemoryBuffer();
 
-        List<MultipartFile> attachmentFiles = buffer.getFiles().stream().map(filename -> {
+        List<Map<String, InputStream>> attachedFiles = buffer.getFiles().stream().map(filename -> {
+            Map<String, InputStream> fileAttachments = new HashMap<>();
             FileData fileData = buffer.getFileData(filename);
-            return ((MultipartFile) new AttachmentFile(fileData));
+            InputStream inputStream = buffer.getInputStream(filename);
+            fileAttachments.put(filename, inputStream);
+            return fileAttachments;
         }).toList();
 
         /*store data*/
-        TicketCreationDto ticketCreationDto = new TicketCreationDto(department, title, description, attachmentFiles);
+        TicketCreationDto ticketCreationDto = new TicketCreationDto(department, title, description,
+                attachedFiles.get(0));
 
         try {
             /*post data*/

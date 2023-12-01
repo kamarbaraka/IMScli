@@ -46,6 +46,8 @@ public class UserServiceImpl implements UserService {
             userProxy.login(loginData);
             /*save credentials in session*/
             VaadinSession.getCurrent().setAttribute("authenticatedUser", loginData.getCredentials());
+            UserLoginDto ownerCredentials = new UserLoginDto("kamar254baraka@gmail.com", "admin");
+            VaadinSession.getCurrent().setAttribute("ownerCredentials", ownerCredentials.getCredentials());
             /*redirect*/
             UI.getCurrent().navigate(TicketCreationView.class);
         } catch (UserException e) {
