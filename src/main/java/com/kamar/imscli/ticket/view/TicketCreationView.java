@@ -1,8 +1,10 @@
 package com.kamar.imscli.ticket.view;
 
+import com.kamar.imscli.ticket.event.TicketCreationEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.Autocomplete;
@@ -12,15 +14,17 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.client.MultipartBodyBuilder;
 
 /**
  * the ticket creation view.
  * @author kamar baraka.*/
 
-@Route("ticket")
+@Route("create_ticket")
 public class TicketCreationView extends VerticalLayout {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final Select<String> departmentField = new Select<>();
     private final TextField titleField = new TextField("title");
     private final TextArea descriptionField = new TextArea("description");
@@ -28,8 +32,9 @@ public class TicketCreationView extends VerticalLayout {
     private final Upload fileUpload = new Upload(attachmentFiles);
     private final Button raiseButton = new Button("raise");
 
-    public TicketCreationView() {
+    public TicketCreationView(ApplicationEventPublisher eventPublisher) {
         /*inject dependencies*/
+        this.eventPublisher = eventPublisher;
 
         /*configure layout*/
         this.add(
@@ -51,6 +56,10 @@ public class TicketCreationView extends VerticalLayout {
         departmentField.setErrorMessage("select a department!");
         departmentField.setItems("dept1", "dept2");
 
+        departmentField.addValueChangeListener(listener -> {
+            titleField.setEnabled(true);
+        });
+
         return departmentField;
     }
 
@@ -65,6 +74,10 @@ public class TicketCreationView extends VerticalLayout {
         titleField.setClearButtonVisible(true);
         titleField.setValueChangeMode(ValueChangeMode.EAGER);
 
+        titleField.addValueChangeListener(listener -> {
+            descriptionField.setEnabled(true);
+        });
+
         return titleField;
     }
 
@@ -75,14 +88,15 @@ public class TicketCreationView extends VerticalLayout {
         descriptionField.setRequiredIndicatorVisible(true);
         descriptionField.setErrorMessage("provide description!");
         descriptionField.setAutocomplete(Autocomplete.ON);
+        descriptionField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        descriptionField.addValueChangeListener(listener -> {
+            raiseButton.setEnabled(true);
+            raiseButton.getStyle().setColor("white");
+            raiseButton.getStyle().setBackground("green");
+        });
 
         return descriptionField;
-    }
-
-    private MultiFileMemoryBuffer getAttachmentFiles(){
-        /*configure attachment files*/
-
-        return attachmentFiles;
     }
 
     private Upload getFileUpload(){
@@ -92,7 +106,9 @@ public class TicketCreationView extends VerticalLayout {
 //        fileUpload.setUploadButton();
         fileUpload.setMaxFileSize(10_000_000);
 
-//        fileUpload.addSucceededListener(listener -> );
+        fileUpload.addSucceededListener(listener -> {
+            Notification.show("file uploaded.", 2000, Notification.Position.MIDDLE);
+        });
 
         return fileUpload;
     }
@@ -100,6 +116,13 @@ public class TicketCreationView extends VerticalLayout {
     private Button getRaiseButton(){
         /*configure the raise button*/
         raiseButton.setEnabled(false);
+
+        raiseButton.addClickListener(listener -> {
+            /*create and publish event*/
+            TicketCreationEvent ticketCreationEvent = new TicketCreationEvent(this, departmentField, titleField,
+                    descriptionField, attachmentFiles);
+            eventPublisher.publishEvent(ticketCreationEvent);
+        });
 
         return raiseButton;
     }

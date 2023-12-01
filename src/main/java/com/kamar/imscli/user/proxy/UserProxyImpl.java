@@ -38,10 +38,13 @@ public class UserProxyImpl implements UserProxy{
         /*set the headers*/
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(userLoginDto.getCredentials());
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
         /*set url*/
         String loginUrl = appProperties.resourceServerBaseUrl() + "/api/v1/login";
 
-        ResponseEntity<AppUser> loginResponse = restTemplate.getForEntity(loginUrl, AppUser.class, headers);
+        ResponseEntity<AppUser> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.GET,
+                requestEntity, AppUser.class);
 
         if (!loginResponse.getStatusCode().equals(HttpStatus.OK)) {
 

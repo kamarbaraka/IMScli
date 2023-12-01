@@ -1,5 +1,6 @@
 package com.kamar.imscli.user.service;
 
+import com.kamar.imscli.ticket.view.TicketCreationView;
 import com.kamar.imscli.user.data.dto.UserActivationDto;
 import com.kamar.imscli.user.data.dto.UserLoginDto;
 import com.kamar.imscli.user.data.dto.UserRegDto;
@@ -45,15 +46,14 @@ public class UserServiceImpl implements UserService {
             userProxy.login(loginData);
             /*save credentials in session*/
             VaadinSession.getCurrent().setAttribute("authenticatedUser", loginData.getCredentials());
+            /*redirect*/
+            UI.getCurrent().navigate(TicketCreationView.class);
         } catch (UserException e) {
 
             /*notify and redirect*/
             Notification.show(e.getMessage());
-            return;
         }
 
-        /*navigate to dashboard*/
-        UI.getCurrent().navigate("");
     }
 
     @Override
