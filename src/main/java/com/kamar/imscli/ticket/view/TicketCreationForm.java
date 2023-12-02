@@ -2,9 +2,7 @@ package com.kamar.imscli.ticket.view;
 
 import com.kamar.imscli.department.service.DepartmentManagementService;
 import com.kamar.imscli.ticket.event.TicketCreationEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -16,25 +14,25 @@ import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.client.MultipartBodyBuilder;
 
 /**
  * the ticket creation view.
  * @author kamar baraka.*/
 
 @Route("create_ticket")
-public class TicketCreationView extends VerticalLayout {
+public class TicketCreationForm extends VerticalLayout {
 
     private final ApplicationEventPublisher eventPublisher;
     private final DepartmentManagementService departmentManagementService;
     private final Select<String> departmentField = new Select<>();
     private final TextField titleField = new TextField("title");
     private final TextArea descriptionField = new TextArea("description");
-    private final MultiFileMemoryBuffer attachmentFiles = new MultiFileMemoryBuffer();
-    private final Upload fileUpload = new Upload(attachmentFiles);
+    private final MultiFileMemoryBuffer attachmentBuffer = new MultiFileMemoryBuffer();
+
+    private final Upload fileUpload = new Upload(attachmentBuffer);
     private final Button raiseButton = new Button("raise");
 
-    public TicketCreationView(ApplicationEventPublisher eventPublisher,
+    public TicketCreationForm(ApplicationEventPublisher eventPublisher,
                               DepartmentManagementService departmentManagementService) {
         /*inject dependencies*/
         this.eventPublisher = eventPublisher;
@@ -108,10 +106,10 @@ public class TicketCreationView extends VerticalLayout {
     private Upload getFileUpload(){
         /*configure file upload*/
         fileUpload.setAutoUpload(true);
-        fileUpload.setAcceptedFileTypes("file/pdf", "image/png", "image/jpeg");
         fileUpload.setMaxFileSize(10_000_000);
 
         fileUpload.addSucceededListener(listener -> {
+
             Notification.show("file uploaded.", 2000, Notification.Position.MIDDLE);
         });
 
@@ -129,7 +127,7 @@ public class TicketCreationView extends VerticalLayout {
         raiseButton.addClickListener(listener -> {
             /*create and publish event*/
             TicketCreationEvent ticketCreationEvent = new TicketCreationEvent(this, departmentField, titleField,
-                    descriptionField, attachmentFiles);
+                    descriptionField, attachmentBuffer);
             eventPublisher.publishEvent(ticketCreationEvent);
         });
 

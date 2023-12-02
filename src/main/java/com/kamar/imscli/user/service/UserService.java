@@ -19,4 +19,6 @@ public interface UserService {
     void activate(TextField activationTokenField);
 
     List<String > getRoles();
+
+    public List<String > getAllUsersWithAuthorityAsString(String authority);
 }

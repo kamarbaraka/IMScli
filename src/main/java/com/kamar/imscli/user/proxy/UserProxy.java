@@ -4,9 +4,8 @@ import com.kamar.imscli.user.data.dto.UserActivationDto;
 import com.kamar.imscli.user.data.dto.UserLoginDto;
 import com.kamar.imscli.user.data.dto.UserRegDto;
 import com.kamar.imscli.user.exception.UserException;
-import com.kamar.imscli.user.model.AllAuthorities;
 import com.kamar.imscli.user.model.AppUser;
-import com.kamar.imscli.user.model.Authority;
+import com.kamar.imscli.role.model.Role;
 
 import java.util.List;
 
@@ -22,5 +21,7 @@ public interface UserProxy {
 
     void activate(UserActivationDto userActivationDto) throws UserException;
 
-    List<Authority> getAuthorities() throws UserException;
+    List<Role> getAuthorities() throws UserException;
+
+    List<AppUser> getAllUsersWithAuthority(String authority) throws UserException;
 }

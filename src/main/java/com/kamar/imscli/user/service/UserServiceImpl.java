@@ -1,14 +1,15 @@
 package com.kamar.imscli.user.service;
 
-import com.kamar.imscli.ticket.view.TicketCreationView;
+import com.kamar.imscli.ticket.view.TicketCreationForm;
 import com.kamar.imscli.user.data.dto.UserActivationDto;
 import com.kamar.imscli.user.data.dto.UserLoginDto;
 import com.kamar.imscli.user.data.dto.UserRegDto;
 import com.kamar.imscli.user.exception.UserException;
-import com.kamar.imscli.user.model.Authority;
+import com.kamar.imscli.user.model.AppUser;
+import com.kamar.imscli.role.model.Role;
 import com.kamar.imscli.user.proxy.UserProxy;
-import com.kamar.imscli.user.views.UserActivationView;
-import com.kamar.imscli.user.views.UserLoginView;
+import com.kamar.imscli.user.views.UserActivationForm;
+import com.kamar.imscli.user.views.UserLoginForm;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.select.Select;
@@ -43,13 +44,14 @@ public class UserServiceImpl implements UserService {
 
         try {
             /*send login request*/
-            userProxy.login(loginData);
+            AppUser appUser = userProxy.login(loginData);
             /*save credentials in session*/
             VaadinSession.getCurrent().setAttribute("authenticatedUser", loginData.getCredentials());
+            VaadinSession.getCurrent().setAttribute("appUser", appUser);
             UserLoginDto ownerCredentials = new UserLoginDto("kamar254baraka@gmail.com", "admin");
             VaadinSession.getCurrent().setAttribute("ownerCredentials", ownerCredentials.getCredentials());
             /*redirect*/
-            UI.getCurrent().navigate(TicketCreationView.class);
+            UI.getCurrent().navigate(TicketCreationForm.class);
         } catch (UserException e) {
 
             /*notify and redirect*/
@@ -74,7 +76,7 @@ public class UserServiceImpl implements UserService {
             userProxy.register(userRegDto);
             /*redirect to activation*/
             VaadinSession.getCurrent().setAttribute("activationCandidate", username);
-            UI.getCurrent().navigate(UserActivationView.class);
+            UI.getCurrent().navigate(UserActivationForm.class);
 
         } catch (UserException e) {
 
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService {
             /*activate the user*/
             userProxy.activate(userActivationDto);
             /*redirect to login page*/
-            UI.getCurrent().navigate(UserLoginView.class);
+            UI.getCurrent().navigate(UserLoginForm.class);
 
         } catch (UserException e) {
 
@@ -112,10 +114,26 @@ public class UserServiceImpl implements UserService {
 
         try {
             /*get authorities and return*/
-            List<Authority> authorities = userProxy.getAuthorities();
-            return authorities.stream().map(Authority::authority).toList();
+            List<Role> authorities = userProxy.getAuthorities();
+            return authorities.stream().map(Role::authority).toList();
         } catch (UserException e) {
 
+            /*notify*/
+            Notification.show(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<String > getAllUsersWithAuthorityAsString(String authority){
+
+        /*get the users*/
+        try {
+
+            List<AppUser> allUsersWithAuthority = userProxy.getAllUsersWithAuthority(authority);
+            return allUsersWithAuthority.stream().map(AppUser::username).toList();
+
+        } catch (UserException e) {
             /*notify*/
             Notification.show(e.getMessage());
             return new ArrayList<>();

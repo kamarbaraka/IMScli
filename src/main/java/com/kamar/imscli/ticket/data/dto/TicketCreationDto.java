@@ -1,7 +1,6 @@
 package com.kamar.imscli.ticket.data.dto;
 
-import java.io.InputStream;
-import java.util.Map;
+import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 
 /**
  * the ticket creation dto.
@@ -11,6 +10,6 @@ public record TicketCreationDto(
         String department,
         String title,
         String description,
-        Map<String , InputStream> attachments
+        MultiFileMemoryBuffer attachments
 ) {
 }

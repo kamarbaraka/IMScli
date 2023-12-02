@@ -3,7 +3,6 @@ package com.kamar.imscli.user.views;
 import com.kamar.imscli.user.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -13,14 +12,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
-import java.awt.*;
-
 /**
  * the view for user registration.
  * @author kamar baraka.*/
 
 @Route(value = "register")
-public class UserRegistrationView extends VerticalLayout {
+public class UserRegistrationForm extends VerticalLayout {
 
     private final UserService userService;
 
@@ -32,7 +29,7 @@ public class UserRegistrationView extends VerticalLayout {
 
     private final Button registerButton = new Button("register");
 
-    public UserRegistrationView(UserService userService) {
+    public UserRegistrationForm(UserService userService) {
         /*inject the user service*/
         this.userService = userService;
 
@@ -122,7 +119,7 @@ public class UserRegistrationView extends VerticalLayout {
         loginButton.setEnabled(true);
         loginButton.setAutofocus(true);
 
-        loginButton.addClickListener(listener -> UI.getCurrent().navigate(UserLoginView.class));
+        loginButton.addClickListener(listener -> UI.getCurrent().navigate(UserLoginForm.class));
 
         return loginButton;
     }

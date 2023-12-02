@@ -16,7 +16,7 @@ import com.vaadin.flow.router.Route;
  * @author kamar baraka.*/
 
 @Route("")
-public class UserLoginView extends VerticalLayout {
+public class UserLoginForm extends VerticalLayout {
     private final UserService userService;
 
     private final TextField usernameField = new TextField("username");
@@ -25,7 +25,7 @@ public class UserLoginView extends VerticalLayout {
     private final Button loginButton = new Button("login");
     private final Button registerButton = new Button("register");
 
-    public UserLoginView(UserService userService) {
+    public UserLoginForm(UserService userService) {
         /*inject dependencies*/
         this.userService = userService;
 
@@ -41,16 +41,15 @@ public class UserLoginView extends VerticalLayout {
         /*configure the username field*/
         usernameField.setRequired(true);
         usernameField.setRequiredIndicatorVisible(true);
+        usernameField.setAutoselect(true);
         usernameField.setAutocomplete(Autocomplete.EMAIL);
+        usernameField.setClearButtonVisible(true);
         usernameField.setErrorMessage("provide your username!");
         usernameField.setPlaceholder("someone@somewhere.com");
         usernameField.setTooltipText("your username");
-//        usernameField.setAutofocus(true);
         usernameField.setId("usernameFieldId");
-        usernameField.setClearButtonVisible(true);
 
         usernameField.addValueChangeListener(listener -> {
-//            passwordField.focus();
             passwordField.setEnabled(true);
         });
 
@@ -64,17 +63,15 @@ public class UserLoginView extends VerticalLayout {
         passwordField.setRequired(true);
         passwordField.setRequiredIndicatorVisible(true);
         passwordField.setErrorMessage("provide your password!");
-//        passwordField.setAutofocus(true);
+        passwordField.setAutoselect(true);
         passwordField.setPlaceholder("enter password");
         passwordField.setTooltipText("your password");
 
         passwordField.addValueChangeListener(listener -> {
             loginButton.setEnabled(true);
-//            loginButton.setAutofocus(true);
-            loginButton.getStyle().setColor("white");
             loginButton.getStyle().setBackground("green");
+            loginButton.getStyle().setColor("white");
             registerButton.setEnabled(false);
-//            registerButton.setAutofocus(false);
         });
 
         return passwordField;
@@ -97,11 +94,10 @@ public class UserLoginView extends VerticalLayout {
 
         /*configure the registration button and return*/
         registerButton.setEnabled(true);
-//        registerButton.setAutofocus(true);
 
         /*add listener*/
         registerButton.addClickListener(listener -> {
-            UI.getCurrent().navigate(UserRegistrationView.class);
+            UI.getCurrent().navigate(UserRegistrationForm.class);
         });
 
         return registerButton;

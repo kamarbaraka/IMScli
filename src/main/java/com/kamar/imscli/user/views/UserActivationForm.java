@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
  * @author kamar baraka.*/
 
 @Route("activate")
-public class UserActivationView extends VerticalLayout {
+public class UserActivationForm extends VerticalLayout {
 
     private final UserService userService;
 
@@ -19,7 +19,7 @@ public class UserActivationView extends VerticalLayout {
 
     private final Button activateButton = new Button("activate");
 
-    public UserActivationView(UserService userService) {
+    public UserActivationForm(UserService userService) {
 
         /*inject dependencies*/
         this.userService = userService;

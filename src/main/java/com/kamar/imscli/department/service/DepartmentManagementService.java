@@ -1,5 +1,7 @@
 package com.kamar.imscli.department.service;
 
+import com.kamar.imscli.department.event.DepartmentCreationEvent;
+
 import java.util.List;
 
 /**
@@ -9,4 +11,5 @@ import java.util.List;
 public interface DepartmentManagementService {
 
     List<String > getAllDepartmentNames();
+    void createDepartment(DepartmentCreationEvent event);
 }

@@ -1,10 +1,10 @@
-package com.kamar.imscli.user.model;
+package com.kamar.imscli.role.model;
 
 /**
  * the user authority model.
  * @author kamar baraka.*/
 
-public record Authority(
+public record Role(
         String authority
 ) {
 }

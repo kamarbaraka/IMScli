@@ -1,5 +1,7 @@
 package com.kamar.imscli.department.proxy;
 
+import com.kamar.imscli.department.data.DepartmentCreationDto;
+import com.kamar.imscli.department.exception.DepartmentException;
 import com.kamar.imscli.department.model.Department;
 
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.List;
 
 public interface DepartmentProxy {
 
-    List<Department> getAllDepartments();
+    List<Department> getAllDepartments() throws DepartmentException;
+
+    void createDepartment(DepartmentCreationDto departmentCreationDto) throws DepartmentException;
 
 }

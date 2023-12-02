@@ -6,7 +6,8 @@ import com.kamar.imscli.user.data.dto.UserLoginDto;
 import com.kamar.imscli.user.data.dto.UserRegDto;
 import com.kamar.imscli.user.exception.UserException;
 import com.kamar.imscli.user.model.AppUser;
-import com.kamar.imscli.user.model.Authority;
+import com.kamar.imscli.role.model.Role;
+import com.vaadin.flow.server.VaadinSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,8 +15,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -115,7 +115,7 @@ public class UserProxyImpl implements UserProxy{
     }
 
     @Override
-    public List<Authority> getAuthorities() throws UserException {
+    public List<Role> getAuthorities() throws UserException {
 
         /*prepare the request*/
 
@@ -129,11 +129,11 @@ public class UserProxyImpl implements UserProxy{
         /*create the request entity*/
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
 
-        ParameterizedTypeReference<List<Authority>> authTypeRef = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<List<Role>> authTypeRef = new ParameterizedTypeReference<>() {
         };
 
         /*send the request*/
-        ResponseEntity<List<Authority>> allAuthoritiesResponse = restTemplate.exchange(
+        ResponseEntity<List<Role>> allAuthoritiesResponse = restTemplate.exchange(
                 allAuthorityUrl, HttpMethod.GET, requestEntity, authTypeRef);
 
 
@@ -145,4 +145,35 @@ public class UserProxyImpl implements UserProxy{
         /*return the response*/
         return allAuthoritiesResponse.getBody();
     }
+
+    @Override
+    public List<AppUser> getAllUsersWithAuthority(String authority) throws UserException {
+
+        /*get credentials*/
+        String credentials = (String) VaadinSession.getCurrent().getAttribute("authenticatedUser");
+
+        /*set the headers*/
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(credentials);
+
+        /*set the url*/
+        String url = appProperties.resourceServerBaseUrl() + "/api/v1/users/management/authority?authority=" + authority;
+
+        /*set the request*/
+        RequestEntity<Object> request = new RequestEntity<>(null, headers, HttpMethod.GET, URI.create(url));
+
+        ParameterizedTypeReference<List<AppUser>> refType = new ParameterizedTypeReference<>(){};
+        /*send the request*/
+        ResponseEntity<List<AppUser>> response = restTemplate.exchange(request, refType);
+
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            /*log and throw*/
+            log.warn(response.getStatusCode());
+            throw new UserException("can't reach server");
+        }
+
+        return response.getBody();
+    }
+
+
 }

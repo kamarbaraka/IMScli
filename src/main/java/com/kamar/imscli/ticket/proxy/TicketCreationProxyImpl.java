@@ -4,9 +4,14 @@ import com.kamar.imscli.app_props.AppProperties;
 import com.kamar.imscli.ticket.data.dto.TicketCreationDto;
 import com.kamar.imscli.ticket.exception.TicketException;
 import com.kamar.imscli.ticket.model.Ticket;
+import com.vaadin.flow.component.upload.receivers.FileData;
+import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
+import com.vaadin.flow.component.upload.receivers.UploadOutputStream;
 import com.vaadin.flow.server.VaadinSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -15,6 +20,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -49,23 +56,35 @@ public class TicketCreationProxyImpl implements TicketCreationProxy {
 
         /*create the body*/
         MultiValueMap<String , Object> attachmentBody = new LinkedMultiValueMap<>();
-        ArrayList<MultipartFile> multipartFiles = new ArrayList<>();
 
-        Map<String, InputStream> attachmentFiles = ticketCreationDto.attachments();
+        /*get the attachments buffer*/
+        MultiFileMemoryBuffer attachmentBuffer = ticketCreationDto.attachments();
 
-        attachmentFiles.forEach((name, inputStream) -> {
+        /*create s store for the byte array resources from the buffer*/
+        List<ByteArrayResource> byteArrayResources = new ArrayList<>();
+
+        /*get and store the byte array resources*/
+        attachmentBuffer.getFiles().forEach(filename -> {
+            InputStream inputStream = attachmentBuffer.getInputStream(filename);
             byte[] bytes = new byte[0];
             try {
                 bytes = inputStream.readAllBytes();
             } catch (IOException e) {
-                /*log*/
-                log.error(e.getMessage());
                 throw new RuntimeException(e);
             }
-            MultipartFile multipartFile = new MockMultipartFile(name, bytes);
-            log.error("content= "+ multipartFile.getContentType());
-            multipartFiles.add(multipartFile);
-            attachmentBody.add("attachments", multipartFile.getResource());
+            ByteArrayResource byteArrayResource = new ByteArrayResource(bytes) {
+                @Override
+                public String getFilename() {
+                    return filename;
+                }
+            };
+
+            byteArrayResources.add(byteArrayResource);
+        });
+
+        /*add the resources to the body*/
+        byteArrayResources.forEach(byteArrayResource -> {
+            attachmentBody.add("attachments", new HttpEntity<>(byteArrayResource, headers));
         });
 
         /*create request entity*/
