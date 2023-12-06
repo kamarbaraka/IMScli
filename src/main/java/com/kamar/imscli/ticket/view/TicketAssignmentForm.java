@@ -3,7 +3,7 @@ package com.kamar.imscli.ticket.view;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +16,38 @@ import java.time.LocalDate;
 
 @Route("ticket_assignment")
 @RequiredArgsConstructor
-public class TicketAssignmentForm {
+public class TicketAssignmentForm extends VerticalLayout {
 
     private final ComboBox<String> assignToField;
     private final DatePicker deadlineField;
     private final Button assignButton;
 
+    /**
+     * Constructs a new TicketAssignmentForm object.
+     *
+     * This constructor initializes the form by injecting dependencies, initializing
+     * the necessary components, and configuring the layout.
+     *
+     * The TicketAssignmentForm contains three components:
+     * - assignToField: ComboBox for selecting a user to assign the ticket to.
+     * - deadlineField: DatePicker for selecting a deadline for the ticket.
+     * - assignButton: Button for assigning the ticket to the selected user.
+     *
+     * Usage:
+     * TicketAssignmentForm form = new TicketAssignmentForm();
+     */
+    public TicketAssignmentForm() {
+        /*inject dependencies*/
+
+        /*initialize the components*/
+        this.assignToField = new ComboBox<>();
+        this.deadlineField = new DatePicker();
+        this.assignButton = new Button();
+
+        /*configure the layout*/
+        getLayout();
+        initListeners();
+    }
 
     /**
      * This method configures the assign to field in a ComboBox<String> widget.
@@ -64,11 +90,52 @@ public class TicketAssignmentForm {
 
     }
 
+    /**
+     * This method configures the assign button in a Button widget.
+     * It sets the button as disabled.
+     *
+     * @return the configured assignButton as a Button
+     */
     private Button getAssignButton(){
         /*configure the assign button*/
         assignButton.setEnabled(false);
+        assignButton.setText("assign");
 
         return assignButton;
+    }
+
+    /**
+     * This method initializes the listeners for the assignToField, deadlineField, and assignButton.
+     * These listeners are added to handle value change events and button click events respectively.
+     * The listeners are defined as lambda expressions.
+     */
+    private void initListeners(){
+        /*add the listeners*/
+        assignToField.addValueChangeListener(event -> {
+            deadlineField.setEnabled(true);
+        });
+
+        deadlineField.addValueChangeListener(event -> {
+            assignButton.setEnabled(true);
+        });
+
+        assignButton.addClickListener(event -> {});
+    }
+
+    /**
+     * This method configures the layout of the current component.
+     * It adds the assignToField, deadlineField, and assignButton to the layout.
+     * The layout is aligned to the center.
+     */
+    private void getLayout(){
+        /*configure the layout*/
+        this.add(
+                getAssignToField(),
+                getDeadlineField(),
+                getAssignButton()
+        );
+
+        this.setAlignItems(Alignment.CENTER);
     }
 
 }
