@@ -16,8 +16,9 @@ import com.vaadin.flow.router.Route;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**
- * the ticket creation view.
- * @author kamar baraka.*/
+ * Represents the ticket creation form view.
+ * @author kamar baraka.
+ */
 
 @Route("create_ticket")
 public class TicketCreationForm extends VerticalLayout {
@@ -50,6 +51,11 @@ public class TicketCreationForm extends VerticalLayout {
         this.setAlignItems(Alignment.CENTER);
     }
 
+    /**
+     * Configures the department field with the required indicator, label, error message, items, and value change listener.
+     *
+     * @return the configured department field
+     */
     private Select<String > getDepartmentField(){
 
         /*configure the department field*/
@@ -67,6 +73,11 @@ public class TicketCreationForm extends VerticalLayout {
         return departmentField;
     }
 
+    /**
+     * Configures the title field.
+     *
+     * @return the configured title field
+     */
     private TextField getTitleField(){
         /*configure the title field*/
         titleField.setEnabled(false);
@@ -85,6 +96,11 @@ public class TicketCreationForm extends VerticalLayout {
         return titleField;
     }
 
+    /**
+     * Configures the description field.
+     *
+     * @return the configured description field
+     */
     private TextArea getDescriptionField(){
         /*configure the description field*/
         descriptionField.setEnabled(false);
@@ -103,6 +119,11 @@ public class TicketCreationForm extends VerticalLayout {
         return descriptionField;
     }
 
+    /**
+     * Configures the file upload component.
+     *
+     * @return the configured file upload component
+     */
     private Upload getFileUpload(){
         /*configure file upload*/
         fileUpload.setAutoUpload(true);
@@ -120,6 +141,11 @@ public class TicketCreationForm extends VerticalLayout {
         return fileUpload;
     }
 
+    /**
+     * Configures the raise button component.
+     *
+     * @return the configured raise button component
+     */
     private Button getRaiseButton(){
         /*configure the raise button*/
         raiseButton.setEnabled(false);
