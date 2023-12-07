@@ -3,6 +3,8 @@ package com.kamar.imscli.user.views;
 import com.kamar.imscli.user.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.Autocomplete;
@@ -44,6 +46,9 @@ public class UserLoginForm extends VerticalLayout {
         usernameField.setAutoselect(true);
         usernameField.setAutocomplete(Autocomplete.EMAIL);
         usernameField.setClearButtonVisible(true);
+        usernameField.setClearButtonVisible(true);
+        usernameField.setMinWidth("500px");
+        usernameField.getStyle().set("font-size", "20px");
         usernameField.setErrorMessage("provide your username!");
         usernameField.setPlaceholder("someone@somewhere.com");
         usernameField.setTooltipText("your username");
@@ -62,16 +67,17 @@ public class UserLoginForm extends VerticalLayout {
         passwordField.setEnabled(false);
         passwordField.setRequired(true);
         passwordField.setRequiredIndicatorVisible(true);
+        passwordField.setMinWidth("500px");
+        passwordField.getStyle().set("font-size", "20px");
         passwordField.setErrorMessage("provide your password!");
         passwordField.setAutoselect(true);
-        passwordField.setPlaceholder("enter password");
-        passwordField.setTooltipText("your password");
+        passwordField.setPlaceholder("enter password...");
+        passwordField.setTooltipText("enter your password");
 
         passwordField.addValueChangeListener(listener -> {
-            loginButton.setEnabled(true);
             loginButton.getStyle().setBackground("green");
             loginButton.getStyle().setColor("white");
-            registerButton.setEnabled(false);
+            loginButton.setEnabled(true);
         });
 
         return passwordField;
@@ -81,6 +87,8 @@ public class UserLoginForm extends VerticalLayout {
 
         /*configure the login button and return*/
         loginButton.setEnabled(false);
+        loginButton.setIcon(new Icon(VaadinIcon.SIGN_IN));
+        loginButton.setMinWidth("200px");
 
         /*add a listener*/
         loginButton.addClickListener(listener -> {
@@ -94,6 +102,11 @@ public class UserLoginForm extends VerticalLayout {
 
         /*configure the registration button and return*/
         registerButton.setEnabled(true);
+        registerButton.getStyle().setBackground("green");
+        registerButton.getStyle().setColor("white");
+        registerButton.setIcon(new Icon(VaadinIcon.USER));
+//        registerButton.setMinHeight("50px");
+        registerButton.setMinWidth("200px");
 
         /*add listener*/
         registerButton.addClickListener(listener -> {

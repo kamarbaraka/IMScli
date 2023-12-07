@@ -2,6 +2,8 @@ package com.kamar.imscli.ticket.view;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.NativeLabel;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.BoxSizing;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -46,6 +48,7 @@ public class TicketSubmissionForm extends VerticalLayout {
         solutionField.setWidth("500px");
         solutionField.setTooltipText("enter the solution");
         solutionField.setErrorMessage("provide a solution");
+        solutionField.setPlaceholder("Enter your solution here");
         solutionField.setAutocapitalize(Autocapitalize.SENTENCES);
         solutionField.setMaxLength(250);
         solutionField.setValueChangeMode(ValueChangeMode.EAGER);
@@ -57,6 +60,7 @@ public class TicketSubmissionForm extends VerticalLayout {
     private NativeLabel getCharCountLabel(){
         /*configure the label*/
         charCountLabel.setMaxHeight("5px");
+        charCountLabel.getStyle().setColor("blue");
 
         return charCountLabel;
     }
@@ -64,6 +68,8 @@ public class TicketSubmissionForm extends VerticalLayout {
     private Button getSubmitButton(){
         /*configure the submit button*/
         submitButton.setText("submit");
+        submitButton.setIcon(new Icon(VaadinIcon.CHECK_CIRCLE));
+        submitButton.setMinWidth("150px");
         submitButton.setEnabled(false);
 
         return submitButton;
@@ -72,6 +78,8 @@ public class TicketSubmissionForm extends VerticalLayout {
     private Button getReferButton(){
         /*configure the refer button*/
         referButton.setText("refer");
+        referButton.setIcon(new Icon(VaadinIcon.FORWARD));
+        referButton.setMinWidth("150px");
         referButton.setEnabled(true);
         referButton.getStyle().setBackground("green");
         referButton.getStyle().setColor("white");
@@ -84,7 +92,6 @@ public class TicketSubmissionForm extends VerticalLayout {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setAlignItems(Alignment.BASELINE);
         buttonLayout.setBoxSizing(BoxSizing.CONTENT_BOX);
-//        buttonLayout.setPadding(true);
 
         buttonLayout.add(getSubmitButton(), getReferButton());
 
@@ -94,8 +101,8 @@ public class TicketSubmissionForm extends VerticalLayout {
     private void initListeners(){
         /*configure the listeners*/
         solutionField.addValueChangeListener(event -> {
-            int charLength = event.getValue().length();
-            charCountLabel.setText(Integer.toString(charLength));
+            TicketFeedbackForm.getCharCount(event, charCountLabel, solutionField);
+
             submitButton.getStyle().setBackground("green");
             submitButton.getStyle().setColor("white");
             submitButton.setEnabled(true);
@@ -114,6 +121,6 @@ public class TicketSubmissionForm extends VerticalLayout {
 
         initListeners();
 
-        this.add(getSolutionField(), getCharCountLabel(), getButtonLayout());
+        this.add(getSolutionField(), getButtonLayout());
     }
 }
