@@ -2,6 +2,8 @@ package com.kamar.imscli.user.views;
 
 import com.kamar.imscli.user.service.UserService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -33,11 +35,12 @@ public class UserActivationForm extends VerticalLayout {
         /*configure the activation token field*/
         activationTokenField.setRequired(true);
         activationTokenField.setRequiredIndicatorVisible(true);
-        activationTokenField.setErrorMessage("provide activation token!");
         activationTokenField.setAutofocus(true);
+        activationTokenField.setClearButtonVisible(true);
+        activateButton.setMinWidth("500px");
+        activationTokenField.setErrorMessage("provide activation token!");
         activationTokenField.setTooltipText("activation token");
         activationTokenField.setPlaceholder("XXXX-XXXXX-XXXX-XXXX");
-        activationTokenField.setClearButtonVisible(true);
 
         activationTokenField.addValueChangeListener(listener -> {
             activateButton.setEnabled(true);
@@ -52,6 +55,10 @@ public class UserActivationForm extends VerticalLayout {
 
         /*configure the activation button*/
         activateButton.setEnabled(false);
+        activateButton.getStyle().setBackground("green");
+        activateButton.getStyle().setColor("white");
+        activateButton.setIcon(new Icon(VaadinIcon.USER_CHECK));
+        activateButton.setMinWidth("300px");
 
         /*add a listener*/
         activateButton.addClickListener(listener -> {
