@@ -22,8 +22,6 @@ public class UserElevationForm extends VerticalLayout {
     private final ComboBox<String> userField;
     private final Checkbox elevateField;
     private final Button elevateButton;
-    private final HorizontalLayout titleBar;
-    private final HorizontalLayout contentLayout;
 
 
     public UserElevationForm() {
@@ -34,8 +32,6 @@ public class UserElevationForm extends VerticalLayout {
         this.elevateField = new Checkbox();
         this.userField = new ComboBox<>();
         this.elevateButton = new Button();
-        this.titleBar = new HorizontalLayout();
-        this.contentLayout = new HorizontalLayout();
 
         /*configure layout*/
         configureLayout();
